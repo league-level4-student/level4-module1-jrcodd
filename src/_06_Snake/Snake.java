@@ -2,9 +2,7 @@ package _06_Snake;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
-
-import org.junit.experimental.theories.FromDataPoints;
+import java.util.ArrayList;;
 
 public class Snake {
 	public static final Color SNAKE_COLOR = Color.BLUE;
@@ -28,6 +26,7 @@ public class Snake {
 	public void feed() {
 		// 1. add a new SnakeSegment object to the snake
 		snake.add(new SnakeSegment(snake.get(0).getLocation(), BODY_SIZE));
+
 	}
 
 	public Location getHeadLocation() {
@@ -42,7 +41,6 @@ public class Snake {
 		Location newLocation = new Location(head.getLocation().x, head.getLocation().y - 1);
 		switch (currentDirection) {
 		case UP:
-
 			newLocation = new Location(head.getLocation().x, head.getLocation().y - 1);
 
 			break;
@@ -63,7 +61,7 @@ public class Snake {
 			break;
 
 		default:
-			
+
 			System.out.println("[ERROR] could now calculate direction");
 			break;
 		}
@@ -78,15 +76,33 @@ public class Snake {
 			// 3. set the location of the head to the new location calculated in step 1
 			head.setLocation(newLocation);
 			canMove = true;
-			
+
 			// 4. set canMove to true
 		}
 	}
 
 	public void setDirection(Direction d) {
 		if (canMove) {
-
-			currentDirection = d;
+			if (currentDirection.equals(Direction.DOWN)) {
+				if (!(d.equals(Direction.UP))) {
+					currentDirection = d;
+				}
+			}
+			if (currentDirection.equals(Direction.UP)) {
+				if (!(d.equals(Direction.DOWN))) {
+					currentDirection = d;
+				}
+			}
+			if (currentDirection.equals(Direction.RIGHT)) {
+				if (!(d.equals(Direction.LEFT))) {
+					currentDirection = d;
+				}
+			}
+			if (currentDirection.equals(Direction.LEFT)) {
+				if (!(d.equals(Direction.RIGHT))) {
+					currentDirection = d;
+				}
+			}
 			canMove = false;
 		}
 
@@ -114,11 +130,14 @@ public class Snake {
 		if (head.getLocation().y < 0) {
 			return true;
 
-		}if (head.getLocation().x < 0) {
+		}
+		if (head.getLocation().x < 0) {
 			return true;
-		} if (head.getLocation().y > _00_SnakeGame.HEIGHT) {
+		}
+		if (head.getLocation().y >= _00_SnakeGame.HEIGHT) {
 			return true;
-		}if (head.getLocation().x > _00_SnakeGame.WIDTH) {
+		}
+		if (head.getLocation().x >= _00_SnakeGame.WIDTH) {
 			return true;
 		} else {
 			return false;
@@ -130,7 +149,7 @@ public class Snake {
 		// in the same location as any other body segment
 		for (int i = 1; i < snake.size(); i++) {
 
-			if (head.getLocation() == snake.get(i).getLocation()) {
+			if (head.getLocation().equals(snake.get(i).getLocation())) {
 				return true;
 			}
 		}
@@ -153,5 +172,10 @@ public class Snake {
 		for (SnakeSegment s : snake) {
 			s.draw(g);
 		}
+		if (isHeadCollidingWithBody()) {
+
+			g.drawString("MONCH MONCH", _00_SnakeGame.WINDOW_HEIGHT / 2, _00_SnakeGame.WINDOW_WIDTH / 2);
+		}
+		g.drawString("Your Score Is: " + snake.size(), 20, 20);
 	}
 }

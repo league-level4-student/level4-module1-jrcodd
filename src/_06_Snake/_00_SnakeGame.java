@@ -61,7 +61,7 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		panel.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 		window.add(panel);
 
-		timer = new Timer(0, this);
+		timer = new Timer(120, this);
 
 		window.pack();
 		window.addKeyListener(this);
@@ -87,13 +87,13 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		// of the game. The smaller the number, the faster it goes.
 		switch (choice) {
 		case "Expert":
-			timer.setDelay(50);
+			timer.setDelay(30);
 			break;
 		case "Moderate":
-			timer.setDelay(100);
+			timer.setDelay(50);
 			break;
 		case "Beginner":
-			timer.setDelay(150);
+			timer.setDelay(80);
 			break;
 		default:
 			break;
@@ -153,7 +153,6 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		default:
 			break;
 		}
-		snake.update();
 	}
 
 	private void setFoodLocation() {
@@ -167,6 +166,7 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		while (snake.isLocationOnSnake(loc)) {
 			loc = new Location(r.nextInt(), r.nextInt(HEIGHT));
 		}
+		foodLocation = loc;
 	}
 
 	private void gameOver() {
@@ -187,6 +187,12 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		} else {
 			playAgain = JOptionPane.showInputDialog("please enter 'yes' or 'no'");
 		}
+		if (playAgain.equalsIgnoreCase("yes")) {
+			snake = new Snake(new Location(WIDTH / 2, HEIGHT / 2));
+			timer.restart();
+		} else if (playAgain.equalsIgnoreCase("no")) {
+			System.exit(0);
+		}
 		// reset the snake and the food and start the timer
 		// else, exit the game
 
@@ -200,9 +206,9 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// 1. update the snake
-		snake.update();
 		// 2. if the snake is colliding with its own body
 		// or if the snake is out of bounds, call gameOver
+		snake.update();
 		if (snake.isHeadCollidingWithBody()) {
 			gameOver();
 		}
@@ -211,11 +217,14 @@ public class _00_SnakeGame implements ActionListener, KeyListener {
 		}
 		// 3. if the location of the head is equal to the location of the food,
 		// feed the snake and set the food location
-		if (snake.getHeadLocation().equals(foodLocation)) {
+
+		if (snake.isLocationOnSnake(foodLocation) || snake.getHeadLocation().equals(foodLocation)) {
 			setFoodLocation();
 			snake.feed();
 			System.out.println("MONCH MONCH");
 		}
+
+		// snake.update();
 		// 4. call panel.repaint();
 		panel.repaint();
 	}
